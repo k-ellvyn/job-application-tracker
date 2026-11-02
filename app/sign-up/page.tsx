@@ -64,6 +64,7 @@ export default function SignUpPage() {
                                 </p>
                             )
                         }
+                        
                         <div className="space-y-2">
                             <Label htmlFor="name">Name</Label>
                             <Input id="name" placeholder="Name" onChange={(e) => {setName(e.target.value);}} required minLength={2} />
