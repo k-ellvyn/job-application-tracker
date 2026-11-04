@@ -23,6 +23,8 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  boards Board[]
+  jobApplications JobApplication[]
 
   @@unique([email])
   @@map("user")
@@ -74,4 +76,67 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Board {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  columns Column[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("board")
+}
+
+model Column {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  order    Int @default(0)
+  boardId  String @db.ObjectId
+  board    Board  @relation(fields: [boardId], references: [id])
+  jobApplications JobApplication[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([boardId])
+  @@map("column")
+}
+
+model JobApplication {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  company     String
+  position    String
+  location    String?
+  status      ApplicationStatus
+  order       Int    @default(0)
+  notes       String?
+  salary      String?
+  jobUrl      String?
+  appliedDate String?
+  tags        String[]
+  description String?
+  columnId    String @db.ObjectId
+  column      Column @relation(fields: [columnId], references: [id])
+  userId      String
+  user        User   @relation(fields: [userId], references: [id])
+  
+  createdAt DateTime @default(now())
+  upadtedAt DateTime @updatedAt
+
+  @@index([columnId])
+  @@map("job_application")
+}
+
+enum ApplicationStatus {
+  APPLIED
+  SCREENING
+  INTERVIEWING
+  OFFER
+  REJECTED
+  WITHDRAWN
 }
