@@ -79,11 +79,12 @@ model Verification {
 }
 
 model Board {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  name   String
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  columns Column[]
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  columns     Column[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -97,7 +98,7 @@ model Column {
   name     String
   order    Int @default(0)
   boardId  String @db.ObjectId
-  board    Board  @relation(fields: [boardId], references: [id])
+  board    Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
   jobApplications JobApplication[]
 
   createdAt DateTime @default(now())
@@ -123,10 +124,10 @@ model JobApplication {
   columnId    String @db.ObjectId
   column      Column @relation(fields: [columnId], references: [id])
   userId      String
-  user        User   @relation(fields: [userId], references: [id])
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   createdAt DateTime @default(now())
-  upadtedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 
   @@index([columnId])
   @@map("job_application")
